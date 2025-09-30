@@ -1,4 +1,4 @@
-# 🚚 Delivery Route Optimizer
+#  Delivery Route Optimizer
 
 A powerful web application that optimizes delivery routes and visualizes pathfinding algorithms. Built with Python Flask backend and vanilla JavaScript frontend.
 
