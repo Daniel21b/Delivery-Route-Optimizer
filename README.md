@@ -4,7 +4,7 @@ A powerful web application that optimizes delivery routes and visualizes pathfin
 
 ## Features
 
-### 🗺️ Map Optimizer
+### Map Optimizer
 - **Geocoding**: Convert real-world street addresses to geographic coordinates
 - **Road-Based Routing**: Routes follow actual roads using OSRM (Open Source Routing Machine)
 - **Multiple Algorithms**: Choose from 4 optimization algorithms:
@@ -15,7 +15,7 @@ A powerful web application that optimizes delivery routes and visualizes pathfin
 - **Interactive Map**: Pan, zoom, and visualize optimized routes with animated markers
 - **Real Driving Distance**: Calculate actual driving distances, not straight-line distances
 
-### 📊 Grid Visualizer
+###  Grid Visualizer
 - **A* Pathfinding**: Visualize the A* algorithm finding the shortest path
 - **Wall Avoidance**: Walls are treated as impassable obstacles
 - **Interactive Grid**: Draw walls, set start/end points with mouse
@@ -270,4 +270,4 @@ For issues, questions, or contributions, please open an issue on the GitHub repo
 
 ---
 
-**Built with ❤️ using Python, Flask, and JavaScript**
+**Built with  using Python, Flask, and JavaScript**
