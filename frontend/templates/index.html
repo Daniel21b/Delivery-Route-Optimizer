@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delivery Route Optimizer</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Delivery Route Optimizer</h1>
+            <p>Optimize delivery routes and visualize pathfinding algorithms</p>
+        </header>
+
+        <nav class="tabs">
+            <button class="tab-button" data-tab="how-it-works">How It Works</button>
+            <button class="tab-button active" data-tab="map-optimizer">Map Optimizer</button>
+            <button class="tab-button" data-tab="grid-visualizer">Grid Visualizer</button>
+        </nav>
+
+        <div class="tab-content" id="how-it-works">
+            <div class="education-container">
+                <div class="education-header">
+                    <h2>How This Project Works</h2>
+                    <p>Explore the architecture, algorithms, and deployment strategies behind this delivery route optimizer</p>
+                </div>
+
+                <div class="accordion-section">
+                    <button class="accordion-btn">
+                        <span class="accordion-icon">▶</span>
+                        <span>Architecture Overview</span>
+                    </button>
+                    <div class="accordion-content">
+                        <h3>System Architecture</h3>
+                        <div class="architecture-diagram">
+                            <div class="arch-layer">
+                                <div class="arch-box frontend-box">
+                                    <strong>Frontend Layer</strong>
+                                    <p>HTML + CSS + JavaScript</p>
+                                    <p>Leaflet.js for Maps</p>
+                                </div>
+                            </div>
+                            <div class="arch-arrow">⬇️</div>
+                            <div class="arch-layer">
+                                <div class="arch-box backend-box">
+                                    <strong>Backend Layer</strong>
+                                    <p>Flask REST API</p>
+                                    <p>Python 3.11</p>
+                                </div>
+                            </div>
+                            <div class="arch-arrow">⬇️</div>
+                            <div class="arch-layer">
+                                <div class="arch-box service-box">
+                                    <strong>Service Layer</strong>
+                                    <p>GeocodingService | RoutingService</p>
+                                </div>
+                            </div>
+                            <div class="arch-arrow">⬇️</div>
+                            <div class="arch-layer">
+                                <div class="arch-box algorithm-box">
+                                    <strong>Algorithm Layer</strong>
+                                    <p>RouteOptimizer | Pathfinding</p>
+                                </div>
+                            </div>
+                            <div class="arch-arrow">⬇️</div>
+                            <div class="arch-layer">
+                                <div class="arch-box external-box">
+                                    <strong>External APIs</strong>
+                                    <p>Nominatim (Geocoding) | OSRM (Routing)</p>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="info-text">Each layer has a specific responsibility, making the system modular and maintainable.</p>
+                    </div>
+                </div>
+
+                <div class="accordion-section">
+                    <button class="accordion-btn">
+                        <span class="accordion-icon">▶</span>
+                        <span>Flask Backend Connection</span>
+                    </button>
+                    <div class="accordion-content">
+                        <h3>How Flask Powers the Backend</h3>
+                        <p>Flask is a lightweight Python web framework that handles HTTP requests and serves our application.</p>
+                        
+                        <div class="code-example">
+                            <div class="code-header">
+                                <span>backend/app.py</span>
+                                <button class="copy-btn" data-code="flask-init">📋 Copy</button>
+                            </div>
+                            <pre><code id="flask-init">from flask import Flask, render_template, request, jsonify
+from flask_cors import CORS
+
+app = Flask(__name__, 
+            template_folder='../frontend/templates',
+            static_folder='../frontend/static')
+CORS(app)  # Enable cross-origin requests
+
+@app.route('/')
+def index():
+    return render_template('index.html')
+
+if __name__ == '__main__':
+    app.run(debug=True, host='0.0.0.0', port=3000)</code></pre>
+                        </div>
+
+                        <div class="explanation-box">
+                            <h4>Key Concepts:</h4>
+                            <ul>
+                                <li><strong>Flask(__name__)</strong>: Creates the Flask application instance</li>
+                                <li><strong>@app.route('/')</strong>: Decorator that maps URLs to Python functions</li>
+                                <li><strong>template_folder</strong>: Where Flask looks for HTML templates</li>
+                                <li><strong>static_folder</strong>: Where CSS, JS, and images are stored</li>
+                                <li><strong>CORS</strong>: Allows frontend to make API requests from different origins</li>
+                                <li><strong>host='0.0.0.0'</strong>: Makes server accessible from any network interface</li>
+                                <li><strong>port=3000</strong>: The port where the server listens (avoid 5000 on macOS)</li>
+                            </ul>
+                        </div>
+
+                        <h4>REST API Endpoints</h4>
+                        <div class="code-example">
+                            <div class="code-header">
+                                <span>API Endpoint Example</span>
+                            </div>
+                            <pre><code>@app.route('/api/optimize-route', methods=['POST'])
+def optimize_route():
+    data = request.get_json()  # Parse JSON from request
+    addresses = data.get('addresses', [])
+    
+    # Process data through services
+    geocoded = geocoding_service.geocode_addresses(addresses)
+    distance_matrix, geometry = routing_service.get_route_matrix(geocoded)
+    
+    # Run optimization algorithm
+    optimizer = RouteOptimizer(geocoded, distance_matrix, geometry)
+    result = optimizer.optimize()
+    
+    return jsonify(result)  # Return JSON response</code></pre>
+                        </div>
+
+                        <div class="resource-links">
+                            <h4>📺 Learning Resources:</h4>
+                            <a href="https://www.youtube.com/watch?v=Z1RJmh_OqeA" target="_blank" class="resource-link">
+                                Flask Tutorial - Full Course (freeCodeCamp)
+                            </a>
+                            <a href="https://www.youtube.com/watch?v=mqhxxeeTbu0" target="_blank" class="resource-link">
+                                Build a REST API with Flask (Tech With Tim)
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-section">
+                    <button class="accordion-btn">
+                        <span class="accordion-icon">▶</span>
+                        <span>Data Flow Journey</span>
+                    </button>
+                    <div class="accordion-content">
+                        <h3>Request/Response Lifecycle</h3>
+                        
+                        <div class="flow-diagram">
+                            <div class="flow-step">
+                                <div class="step-number">1</div>
+                                <div class="step-content">
+                                    <strong>User Input</strong>
+                                    <p>User enters addresses in the textarea</p>
+                                </div>
+                            </div>
+
+                            <div class="flow-step">
+                                <div class="step-number">2</div>
+                                <div class="step-content">
+                                    <strong>Frontend JavaScript</strong>
+                                    <p>JavaScript sends POST request to Flask API</p>
+                                    <div class="mini-code">
+<pre>fetch('/api/optimize-route', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({ addresses: [...] })
+})</pre>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="flow-step">
+                                <div class="step-number">3</div>
+                                <div class="step-content">
+                                    <strong>Flask Receives Request</strong>
+                                    <p>Flask route handler processes the JSON data</p>
+                                </div>
+                            </div>
+
+                            <div class="flow-step">
+                                <div class="step-number">4</div>
+                                <div class="step-content">
+                                    <strong>Geocoding Service</strong>
+                                    <p>Converts addresses to coordinates using Nominatim API</p>
+                                    <div class="mini-code">
+<pre>"Times Square, NY" → 
+{ lat: 40.758, lng: -73.985 }</pre>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="flow-step">
+                                <div class="step-number">5</div>
+                                <div class="step-content">
+                                    <strong>Routing Service</strong>
+                                    <p>OSRM API calculates road distances between all points</p>
+                                </div>
+                            </div>
+
+                            <div class="flow-step">
+                                <div class="step-number">6</div>
+                                <div class="step-content">
+                                    <strong>Route Optimizer</strong>
+                                    <p>Nearest Neighbor algorithm finds optimal visit order</p>
+                                </div>
+                            </div>
+
+                            <div class="flow-step">
+                                <div class="step-number">7</div>
+                                <div class="step-content">
+                                    <strong>JSON Response</strong>
+                                    <p>Flask returns optimized route with geometries</p>
+                                </div>
+                            </div>
+
+                            <div class="flow-step">
+                                <div class="step-number">8</div>
+                                <div class="step-content">
+                                    <strong>Map Visualization</strong>
+                                    <p>Leaflet.js renders the route on the map</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button class="try-btn" onclick="document.querySelector('[data-tab=map-optimizer]').click()">
+                            Try It Now →
+                        </button>
+                    </div>
+                </div>
+
+                <div class="accordion-section">
+                    <button class="accordion-btn">
+                        <span class="accordion-icon">▶</span>
+                        <span>Algorithms Explained</span>
+                    </button>
+                    <div class="accordion-content">
+                        <h3>Route Optimization: Nearest Neighbor</h3>
+                        <p>A greedy algorithm that builds a route by always visiting the closest unvisited location.</p>
+                        
+                        <div class="algorithm-viz">
+                            <div class="algo-step">
+                                <strong>Step 1:</strong> Start at the first location
+                            </div>
+                            <div class="algo-step">
+                                <strong>Step 2:</strong> Find the nearest unvisited location
+                            </div>
+                            <div class="algo-step">
+                                <strong>Step 3:</strong> Move to that location
+                            </div>
+                            <div class="algo-step">
+                                <strong>Step 4:</strong> Repeat until all locations visited
+                            </div>
+                        </div>
+
+                        <div class="code-example">
+                            <div class="code-header">
+                                <span>backend/algorithms/route_optimizer.py</span>
+                            </div>
+                            <pre><code>def nearest_neighbor(self):
+    n = len(self.locations)
+    unvisited = set(range(1, n))
+    route_indices = [0]  # Start at first location
+    current_idx = 0
+    
+    while unvisited:
+        nearest_idx = None
+        nearest_distance = float('inf')
+        
+        for idx in unvisited:
+            distance = self._get_distance(current_idx, idx)
+            if distance < nearest_distance:
+                nearest_distance = distance
+                nearest_idx = idx
+        
+        route_indices.append(nearest_idx)
+        unvisited.remove(nearest_idx)
+        current_idx = nearest_idx
+    
+    return self._build_route_response(route_indices)</code></pre>
+                        </div>
+
+                        <div class="complexity-box">
+                            <strong>Time Complexity:</strong> O(n²) where n = number of locations<br>
+                            <strong>Space Complexity:</strong> O(n)<br>
+                            <strong>Optimal?</strong> No, but fast and gives good results (TSP is NP-hard)
+                        </div>
+
+                        <h3>Pathfinding: A* Algorithm</h3>
+                        <p>An informed search algorithm that finds the shortest path using both actual distance (g) and estimated distance to goal (h).</p>
+
+                        <div class="formula-box">
+                            <strong>A* Formula:</strong>
+                            <div class="formula">f(n) = g(n) + h(n)</div>
+                            <ul>
+                                <li><strong>g(n)</strong>: Actual cost from start to current node</li>
+                                <li><strong>h(n)</strong>: Heuristic estimate from current to goal (Manhattan distance)</li>
+                                <li><strong>f(n)</strong>: Total estimated cost</li>
+                            </ul>
+                        </div>
+
+                        <div class="code-example">
+                            <div class="code-header">
+                                <span>backend/algorithms/pathfinding.py</span>
+                            </div>
+                            <pre><code>def heuristic(self, x1, y1, x2, y2):
+    # Manhattan distance
+    return abs(x1 - x2) + abs(y1 - y2)
+
+def find_path(self):
+    start_node = Node(self.start[0], self.start[1], 
+                      g=0, 
+                      h=self.heuristic(...))
+    open_set = [start_node]
+    closed_set = set()
+    
+    while open_set:
+        current = heapq.heappop(open_set)  # Node with lowest f
+        
+        if current == end:
+            return reconstruct_path(current)
+        
+        for neighbor in get_neighbors(current):
+            tentative_g = current.g + 1
+            if tentative_g < neighbor.g:
+                neighbor.g = tentative_g
+                neighbor.f = neighbor.g + neighbor.h
+                heapq.heappush(open_set, neighbor)</code></pre>
+                        </div>
+
+                        <div class="resource-links">
+                            <h4>📺 Learning Resources:</h4>
+                            <a href="https://www.youtube.com/watch?v=ySN5Wnu88nE" target="_blank" class="resource-link">
+                                A* Pathfinding Visualization (Sebastian Lague)
+                            </a>
+                            <a href="https://www.youtube.com/watch?v=A60q6dcoCjw" target="_blank" class="resource-link">
+                                Dijkstra's Algorithm Explained (Abdul Bari)
+                            </a>
+                        </div>
+
+                        <button class="try-btn" onclick="document.querySelector('[data-tab=grid-visualizer]').click()">
+                            Visualize A* Algorithm →
+                        </button>
+                    </div>
+                </div>
+
+                <div class="accordion-section">
+                    <button class="accordion-btn">
+                        <span class="accordion-icon">▶</span>
+                        <span>Why Docker Matters</span>
+                    </button>
+                    <div class="accordion-content">
+                        <h3>Containerization Benefits</h3>
+                        
+                        <div class="comparison-table">
+                            <div class="comparison-row header-row">
+                                <div class="comparison-cell">Without Docker</div>
+                                <div class="comparison-cell">With Docker</div>
+                            </div>
+                            <div class="comparison-row">
+                                <div class="comparison-cell bad">
+                                    ❌ "Works on my machine" syndrome<br>
+                                    Different Python versions, OS issues
+                                </div>
+                                <div class="comparison-cell good">
+                                    ✅ Consistent environment everywhere<br>
+                                    Same container runs on any machine
+                                </div>
+                            </div>
+                            <div class="comparison-row">
+                                <div class="comparison-cell bad">
+                                    ❌ Manual dependency installation<br>
+                                    pip install, system packages, conflicts
+                                </div>
+                                <div class="comparison-cell good">
+                                    ✅ All dependencies bundled<br>
+                                    One command to run everything
+                                </div>
+                            </div>
+                            <div class="comparison-row">
+                                <div class="comparison-cell bad">
+                                    ❌ Difficult deployment<br>
+                                    Server setup, configuration, updates
+                                </div>
+                                <div class="comparison-cell good">
+                                    ✅ Deploy anywhere instantly<br>
+                                    AWS, Railway, Heroku, local
+                                </div>
+                            </div>
+                            <div class="comparison-row">
+                                <div class="comparison-cell bad">
+                                    ❌ Environment pollution<br>
+                                    Global packages, version conflicts
+                                </div>
+                                <div class="comparison-cell good">
+                                    ✅ Isolated environment<br>
+                                    No conflicts with other projects
+                                </div>
+                            </div>
+                        </div>
+
+                        <h3>Dockerfile Breakdown</h3>
+                        <div class="code-example">
+                            <div class="code-header">
+                                <span>Dockerfile (Line by Line)</span>
+                            </div>
+                            <pre><code><span class="code-comment"># Use official Python 3.11 slim image (smaller size)</span>
+FROM python:3.11-slim
+
+<span class="code-comment"># Set working directory inside container</span>
+WORKDIR /app
+
+<span class="code-comment"># Copy requirements first (Docker caching optimization)</span>
+COPY requirements.txt .
+
+<span class="code-comment"># Install Python dependencies (no cache to reduce size)</span>
+RUN pip install --no-cache-dir -r requirements.txt
+
+<span class="code-comment"># Copy all project files into container</span>
+COPY . .
+
+<span class="code-comment"># Expose port 3000 to host machine</span>
+EXPOSE 3000
+
+<span class="code-comment"># Set environment variables</span>
+ENV FLASK_APP=backend.app
+ENV PYTHONUNBUFFERED=1
+
+<span class="code-comment"># Command to run when container starts</span>
+CMD ["python", "-m", "backend.app"]</code></pre>
+                        </div>
+
+                        <div class="explanation-box">
+                            <h4>Key Concepts:</h4>
+                            <ul>
+                                <li><strong>FROM</strong>: Base image (contains Python already installed)</li>
+                                <li><strong>WORKDIR</strong>: All commands run in this directory</li>
+                                <li><strong>COPY requirements first</strong>: If requirements don't change, Docker reuses cached layer (faster builds)</li>
+                                <li><strong>RUN</strong>: Execute commands during image build</li>
+                                <li><strong>EXPOSE</strong>: Documents which port the container listens on</li>
+                                <li><strong>ENV</strong>: Set environment variables</li>
+                                <li><strong>CMD</strong>: Default command when container starts</li>
+                            </ul>
+                        </div>
+
+                        <h3>Docker Commands</h3>
+                        <div class="command-list">
+                            <div class="command-item">
+                                <code>docker build -t delivery-route-optimizer .</code>
+                                <p>Build image from Dockerfile</p>
+                            </div>
+                            <div class="command-item">
+                                <code>docker run -p 3000:3000 delivery-route-optimizer</code>
+                                <p>Run container, map port 3000</p>
+                            </div>
+                            <div class="command-item">
+                                <code>docker ps</code>
+                                <p>List running containers</p>
+                            </div>
+                            <div class="command-item">
+                                <code>docker stop &lt;container_id&gt;</code>
+                                <p>Stop a running container</p>
+                            </div>
+                        </div>
+
+                        <div class="resource-links">
+                            <h4>📺 Learning Resources:</h4>
+                            <a href="https://www.youtube.com/watch?v=fqMOX6JJhGo" target="_blank" class="resource-link">
+                                Docker Tutorial for Beginners (freeCodeCamp)
+                            </a>
+                            <a href="https://www.youtube.com/watch?v=3c-iBn73dDE" target="_blank" class="resource-link">
+                                Docker in 100 Seconds (Fireship)
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-section">
+                    <button class="accordion-btn">
+                        <span class="accordion-icon">▶</span>
+                        <span>Hosting & Deployment</span>
+                    </button>
+                    <div class="accordion-content">
+                        <h3>Deployment Options</h3>
+                        
+                        <div class="hosting-options">
+                            <div class="hosting-card">
+                                <h4>Local Development</h4>
+                                <p><strong>When:</strong> Testing and development</p>
+                                <div class="mini-code">
+<pre># Without Docker
+python -m backend.app
+
+# With Docker
+docker build -t app .
+docker run -p 3000:3000 app</pre>
+                                </div>
+                                <p><strong>Access:</strong> http://localhost:3000</p>
+                            </div>
+
+                            <div class="hosting-card">
+                                <h4>Railway.app</h4>
+                                <p><strong>Best for:</strong> Quick deployment with free tier</p>
+                                <ul>
+                                    <li>Connect GitHub repository</li>
+                                    <li>Auto-detects Dockerfile</li>
+                                    <li>Free 500 hours/month</li>
+                                    <li>Custom domain support</li>
+                                </ul>
+                                <a href="https://railway.app" target="_blank">→ Visit Railway</a>
+                            </div>
+
+                            <div class="hosting-card">
+                                <h4>Heroku</h4>
+                                <p><strong>Best for:</strong> Traditional cloud platform</p>
+                                <ul>
+                                    <li>Easy git-based deployment</li>
+                                    <li>Free tier available</li>
+                                    <li>Add-ons marketplace</li>
+                                    <li>Automatic SSL</li>
+                                </ul>
+                                <a href="https://www.heroku.com" target="_blank">→ Visit Heroku</a>
+                            </div>
+
+                            <div class="hosting-card">
+                                <h4>AWS / GCP / Azure</h4>
+                                <p><strong>Best for:</strong> Production & scaling</p>
+                                <ul>
+                                    <li>Full control & flexibility</li>
+                                    <li>Auto-scaling capabilities</li>
+                                    <li>More complex setup</li>
+                                    <li>Pay-as-you-go pricing</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <h3>Why Port 3000?</h3>
+                        <div class="info-box">
+                            <p>On macOS, port 5000 is used by AirPlay Receiver, and port 8080 is often used by system services. Port 3000 is commonly available and widely used for web development (React, Next.js, Node.js apps also use it by default).</p>
+                        </div>
+
+                        <h3>Environment Variables Best Practices</h3>
+                        <div class="code-example">
+                            <div class="code-header">
+                                <span>.env (never commit this!)</span>
+                            </div>
+                            <pre><code>FLASK_ENV=production
+SECRET_KEY=your-secret-key-here
+DATABASE_URL=postgresql://...
+API_KEY=your-api-key
+
+# In Docker:
+docker run -p 3000:3000 --env-file .env app</code></pre>
+                        </div>
+
+                        <div class="resource-links">
+                            <h4>📺 Learning Resources:</h4>
+                            <a href="https://www.youtube.com/watch?v=Nw6C5k_8NyE" target="_blank" class="resource-link">
+                                Deploy Flask App to Heroku (Pretty Printed)
+                            </a>
+                            <a href="https://www.youtube.com/watch?v=JsOoUrII3EY" target="_blank" class="resource-link">
+                                Deploy to Railway in 5 Minutes
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-section">
+                    <button class="accordion-btn">
+                        <span class="accordion-icon">▶</span>
+                        <span>Additional Resources & Credits</span>
+                    </button>
+                    <div class="accordion-content">
+                        <h3>Technologies Used</h3>
+                        
+                        <div class="tech-grid">
+                            <div class="tech-item">
+                                <strong>Flask</strong>
+                                <p>Python web framework</p>
+                                <a href="https://flask.palletsprojects.com" target="_blank">Documentation</a>
+                            </div>
+                            <div class="tech-item">
+                                <strong>Leaflet.js</strong>
+                                <p>Interactive maps library</p>
+                                <a href="https://leafletjs.com" target="_blank">Documentation</a>
+                            </div>
+                            <div class="tech-item">
+                                <strong>Nominatim</strong>
+                                <p>OpenStreetMap geocoding</p>
+                                <a href="https://nominatim.org" target="_blank">Documentation</a>
+                            </div>
+                            <div class="tech-item">
+                                <strong>OSRM</strong>
+                                <p>Open Source Routing Machine</p>
+                                <a href="http://project-osrm.org" target="_blank">Documentation</a>
+                            </div>
+                        </div>
+
+                        <h3>Algorithm References</h3>
+                        <ul class="reference-list">
+                            <li>
+                                <strong>Traveling Salesman Problem (TSP):</strong>
+                                <a href="https://en.wikipedia.org/wiki/Travelling_salesman_problem" target="_blank">Wikipedia</a>
+                            </li>
+                            <li>
+                                <strong>A* Pathfinding:</strong>
+                                <a href="https://www.redblobgames.com/pathfinding/a-star/introduction.html" target="_blank">Red Blob Games (Interactive Tutorial)</a>
+                            </li>
+                            <li>
+                                <strong>Haversine Formula:</strong>
+                                <a href="https://en.wikipedia.org/wiki/Haversine_formula" target="_blank">Wikipedia</a>
+                            </li>
+                        </ul>
+
+                        <h3>YouTube Playlists</h3>
+                        <div class="resource-links">
+                            <a href="https://www.youtube.com/watch?v=Z1RJmh_OqeA" target="_blank" class="resource-link">
+                                Flask Tutorial - Complete Course (freeCodeCamp)
+                            </a>
+                            <a href="https://www.youtube.com/watch?v=ySN5Wnu88nE" target="_blank" class="resource-link">
+                                A* Pathfinding Algorithm (Sebastian Lague)
+                            </a>
+                            <a href="https://www.youtube.com/watch?v=fqMOX6JJhGo" target="_blank" class="resource-link">
+                                Docker Tutorial for Beginners (freeCodeCamp)
+                            </a>
+                            <a href="https://www.youtube.com/watch?v=0-O-w-HJ-p0" target="_blank" class="resource-link">
+                                Leaflet.js Map Tutorial (Traversy Media)
+                            </a>
+                        </div>
+
+                        <h3>Project Repository</h3>
+                        <div class="info-box">
+                            <p>This project is open source. Feel free to fork, modify, and learn from it!</p>
+                            <p><strong>Key Features Learned:</strong></p>
+                            <ul>
+                                <li>Building REST APIs with Flask</li>
+                                <li>Implementing graph algorithms (TSP, A*)</li>
+                                <li>Working with external APIs (geocoding, routing)</li>
+                                <li>Interactive map visualizations</li>
+                                <li>Containerization with Docker</li>
+                                <li>Frontend-backend communication</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="call-to-action">
+                    <h3>Ready to Try It Out?</h3>
+                    <div class="cta-buttons">
+                        <button class="cta-btn" onclick="document.querySelector('[data-tab=map-optimizer]').click()">
+                            Optimize Routes
+                        </button>
+                        <button class="cta-btn" onclick="document.querySelector('[data-tab=grid-visualizer]').click()">
+                            Visualize Pathfinding
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-content active" id="map-optimizer">
+            <div class="split-layout">
+                <div class="control-panel">
+                    <h2>Route Configuration</h2>
+                    
+                    <div class="form-group">
+                        <label for="addresses">Enter Addresses (one per line):</label>
+                        <textarea id="addresses" rows="10" placeholder="123 Main St, New York, NY&#10;456 Broadway, New York, NY&#10;789 Park Ave, New York, NY"></textarea>
+                    </div>
+
+                    <button id="find-route-btn" class="btn btn-primary">Find Optimal Route</button>
+                    
+                    <div id="map-loading" class="loading" style="display: none;">
+                        <div class="spinner"></div>
+                        <p>Optimizing route...</p>
+                    </div>
+
+                    <div id="map-results" class="results" style="display: none;">
+                        <h3>Results</h3>
+                        <p><strong>Total Distance:</strong> <span id="total-distance"></span> km</p>
+                        <div id="route-list"></div>
+                    </div>
+
+                    <div id="map-error" class="error" style="display: none;"></div>
+                </div>
+
+                <div class="map-container">
+                    <div id="map"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-content" id="grid-visualizer">
+            <div class="split-layout">
+                <div class="control-panel">
+                    <h2>Grid Controls</h2>
+                    
+                    <div class="form-group">
+                        <label>Drawing Mode:</label>
+                        <div class="button-group">
+                            <button id="draw-start-btn" class="btn btn-small">Set Start</button>
+                            <button id="draw-end-btn" class="btn btn-small">Set End</button>
+                            <button id="draw-wall-btn" class="btn btn-small active">Draw Wall</button>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="pathfinding-algorithm">Pathfinding Algorithm:</label>
+                        <select id="pathfinding-algorithm">
+                            <option value="astar">A* (Optimal & Efficient)</option>
+                            <option value="dijkstra">Dijkstra (Explores Uniformly)</option>
+                            <option value="greedy">Greedy (Fast but Suboptimal)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <button id="run-pathfinding-btn" class="btn btn-primary">Run Pathfinding</button>
+                        <button id="clear-grid-btn" class="btn btn-secondary">Clear Grid</button>
+                    </div>
+
+                    <div id="grid-loading" class="loading" style="display: none;">
+                        <div class="spinner"></div>
+                        <p>Finding path...</p>
+                    </div>
+
+                    <div id="grid-results" class="results" style="display: none;">
+                        <h3>Results</h3>
+                        <p id="path-status"></p>
+                        <p><strong>Path Length:</strong> <span id="path-length"></span> cells</p>
+                        <p><strong>Cells Explored:</strong> <span id="cells-explored"></span></p>
+                    </div>
+
+                    <div id="grid-error" class="error" style="display: none;"></div>
+
+                    <div class="legend">
+                        <h3>Legend</h3>
+                        <div class="legend-item">
+                            <div class="legend-color start"></div>
+                            <span>Start</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color end"></div>
+                            <span>End</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color wall"></div>
+                            <span>Wall</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color explored"></div>
+                            <span>Explored</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color path"></div>
+                            <span>Path</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid-container">
+                    <canvas id="grid-canvas"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="{{ url_for('static', filename='js/education.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/map-optimizer.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/grid-visualizer.js') }}"></script>
+</body>
+</html>
